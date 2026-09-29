@@ -31,10 +31,13 @@ tfoot th,tfoot td{background:#1d2b35;font-size:20px;font-weight:900;padding:13px
 .total{padding:22px;text-align:center;background:rgba(7,17,24,.94);border:1px solid #536c7e;border-radius:15px}
 .total .label{font-size:24px;font-weight:900} .total .value{font-size:clamp(38px,7vw,70px);font-weight:1000;margin-top:5px;font-variant-numeric:tabular-nums}
 #grandCost{color:#53ee91} #grandItems{color:#46cdf7}
+.cost-korean{margin-top:4px;font-size:clamp(18px,2.4vw,27px);font-weight:800;color:#d9fbe7;letter-spacing:-.5px}
 .footer{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:12px;color:#b7c5ce;font-size:14px}
 button{border:1px solid #526674;border-radius:9px;background:#26343f;color:white;padding:11px 18px;font-size:16px;font-weight:800;cursor:pointer}
 button:hover{background:#324653}
 @media(max-width:760px){.grid3{grid-template-columns:1fr}.main{grid-template-columns:1fr}.totals{grid-template-columns:1fr}.wrap{width:94%}.field{grid-template-columns:105px 1fr}table{min-width:520px}.table-scroll{overflow-x:auto}.footer{flex-direction:column;align-items:stretch}button{width:100%}}
+
+.discount-row{display:flex;align-items:center;justify-content:center;gap:12px;margin:14px 0 2px;padding:12px 14px;border:1px solid rgba(255,255,255,.12);border-radius:10px;background:rgba(10,20,28,.78);font-weight:800}.discount-row label{display:flex;align-items:center;gap:8px;cursor:pointer}.discount-row input[type="checkbox"]{width:20px;height:20px;accent-color:#32d17d}.discount-rate-wrap{display:flex;align-items:center;gap:6px}.discount-rate-wrap input{width:92px;height:38px;text-align:center;font-size:18px;font-weight:900;border-radius:8px;border:1px solid #aab6c0;background:#f5f7f8;color:#101820}.discount-rate-wrap span{font-size:18px;font-weight:900}.discount-note{opacity:.72;font-size:12px;font-weight:600}@media(max-width:600px){.discount-row{flex-wrap:wrap;gap:8px}.discount-note{width:100%;text-align:center}}
 </style>
 </head>
 <body>
@@ -42,9 +45,9 @@ button:hover{background:#324653}
 <header class="hero"><h1>🔧 튜닝계산기</h1><p>TUNING CALCULATOR</p></header>
 
 <section class="grid3">
-<div class="panel quality low"><div class="qtitle">⚙ 저품질</div><label class="field"><span>비용</span><input data-price="low" type="number" min="0" value="0" inputmode="numeric"></label><label class="field"><span>소모품 개수</span><input data-item="low" type="number" min="0" value="0" inputmode="numeric"></label></div>
-<div class="panel quality mid"><div class="qtitle">⚙ 중품질</div><label class="field"><span>비용</span><input data-price="mid" type="number" min="0" value="0" inputmode="numeric"></label><label class="field"><span>소모품 개수</span><input data-item="mid" type="number" min="0" value="0" inputmode="numeric"></label></div>
-<div class="panel quality high"><div class="qtitle">⚙ 고품질</div><label class="field"><span>비용</span><input data-price="high" type="number" min="0" value="0" inputmode="numeric"></label><label class="field"><span>소모품 개수</span><input data-item="high" type="number" min="0" value="0" inputmode="numeric"></label></div>
+<div class="panel quality low"><div class="qtitle">⚙ 저품질</div><label class="field"><span>비용 <small>(만원)</small></span><input data-price="low" type="number" min="0" value="0" inputmode="numeric"></label><label class="field"><span>소모품 개수</span><input data-item="low" type="number" min="0" value="0" inputmode="numeric"></label></div>
+<div class="panel quality mid"><div class="qtitle">⚙ 중품질</div><label class="field"><span>비용 <small>(만원)</small></span><input data-price="mid" type="number" min="0" value="0" inputmode="numeric"></label><label class="field"><span>소모품 개수</span><input data-item="mid" type="number" min="0" value="0" inputmode="numeric"></label></div>
+<div class="panel quality high"><div class="qtitle">⚙ 고품질</div><label class="field"><span>비용 <small>(만원)</small></span><input data-price="high" type="number" min="0" value="0" inputmode="numeric"></label><label class="field"><span>소모품 개수</span><input data-item="high" type="number" min="0" value="0" inputmode="numeric"></label></div>
 </section>
 
 <section class="main">
@@ -74,8 +77,8 @@ button:hover{background:#324653}
     <td><input class="qty" data-q="low" type="number" min="0" value="0" inputmode="numeric"></td>
     <td><input class="qty" data-q="mid" type="number" min="0" value="0" inputmode="numeric"></td>
     <td><input class="qty" data-q="high" type="number" min="0" value="0" inputmode="numeric"></td></tr></tbody>
-<tfoot><tr><th>∑ 튜닝수 합계</th><td id="lowCount">0</td><td id="midCount">0</td><td id="highCount">0</td></tr></tfoot>
-</table></div></div>
+<tfoot><tr><th>튜닝수 합계</th><td id="lowCount">0</td><td id="midCount">0</td><td id="highCount">0</td></tr></tfoot>
+</table><div class="discount-row"><label><input id="discountEnabled" type="checkbox"> 할인 적용</label><div class="discount-rate-wrap"><input id="discountRate" type="number" min="0" max="100" step="0.1" value="0" inputmode="decimal"><span>%</span></div><span class="discount-note">총 비용에만 적용</span></div></div></div>
 <div class="panel"><div class="section-title">📊 품질별 계산 결과</div><div class="results">
 <div class="result-card"><h3>⚙ 저품질</h3><div class="line"><span>튜닝수</span><b id="lowN">0</b></div><div class="line"><span>비용 합계</span><b id="lowCost">0</b></div><div class="line"><span>소모품 합계</span><b id="lowItems">0개</b></div></div>
 <div class="result-card mid"><h3>⚙ 중품질</h3><div class="line"><span>튜닝수</span><b id="midN">0</b></div><div class="line"><span>비용 합계</span><b id="midCost">0</b></div><div class="line"><span>소모품 합계</span><b id="midItems">0개</b></div></div>
@@ -83,8 +86,8 @@ button:hover{background:#324653}
 </div></div>
 </section>
 
-<section class="totals"><div class="total"><div class="label">💵 총 비용</div><div class="value"><span id="grandCost">0</span> <small>원</small></div></div><div class="total"><div class="label">📦 총 소모품 개수</div><div class="value"><span id="grandItems">0</span> <small>개</small></div></div></section>
-<div class="footer"><span>※ 품질별 비용과 소모품 개수에 해당 품질의 튜닝 수량을 곱하여 자동 합산합니다.</span><button id="reset" type="button">↻ 전체 초기화</button></div>
+<section class="totals"><div class="total"><div class="label">💵 총 비용</div><div class="value"><span id="grandCost">0</span> <small>원</small></div><div id="grandCostKorean" class="cost-korean">0원</div></div><div class="total"><div class="label">📦 총 소모품 개수</div><div class="value"><span id="grandItems">0</span> <small>개</small></div></div></section>
+<div class="footer"><span>※ 비용은 만원 단위로 입력합니다. 품질별 비용과 소모품 개수에 해당 품질의 튜닝 수량을 곱하여 자동 합산합니다.</span><button id="reset" type="button">↻ 전체 초기화</button></div>
 </div>
 <script>
 (()=>{
@@ -92,6 +95,16 @@ button:hover{background:#324653}
  const qs=['low','mid','high'];
  const safe=v=>{let x=Number(v);if(!Number.isFinite(x)||x<0)x=0;return Math.min(x,999999999)};
  const fmt=x=>Math.round(x).toLocaleString('ko-KR');
+ const fmtKoreanCost=n=>{
+   n=Math.round(n);
+   if(n===0)return '0원';
+   const eok=Math.floor(n/100000000), man=Math.floor((n%100000000)/10000), won=n%10000;
+   const parts=[];
+   if(eok)parts.push(eok.toLocaleString('ko-KR')+'억');
+   if(man)parts.push(man.toLocaleString('ko-KR')+'만원');
+   if(won)parts.push(won.toLocaleString('ko-KR')+'원');
+   return parts.join(' ');
+ };
  function calc(){
    const count={low:0,mid:0,high:0};
    root.querySelectorAll('[data-q]').forEach(i=>count[i.dataset.q]+=safe(i.value));
@@ -99,18 +112,23 @@ button:hover{background:#324653}
    qs.forEach(q=>{
      const price=safe(root.querySelector('[data-price="'+q+'"]').value);
      const per=safe(root.querySelector('[data-item="'+q+'"]').value);
-     const cost=price*count[q], items=per*count[q];
+     const cost=price*count[q]*10000, items=per*count[q];
      totalCost+=cost; totalItems+=items;
      root.getElementById(q+'Count').textContent=fmt(count[q]);
      root.getElementById(q+'N').textContent=fmt(count[q]);
      root.getElementById(q+'Cost').textContent=fmt(cost);
      root.getElementById(q+'Items').textContent=fmt(items)+'개';
    });
-   root.getElementById('grandCost').textContent=fmt(totalCost);
+   const discountEnabled=root.getElementById('discountEnabled').checked;
+   const discountRate=Math.min(safe(root.getElementById('discountRate').value),100);
+   const finalCost=discountEnabled ? totalCost*(1-discountRate/100) : totalCost;
+   root.getElementById('grandCost').textContent=fmt(finalCost);
+    root.getElementById('grandCostKorean').textContent=fmtKoreanCost(finalCost);
    root.getElementById('grandItems').textContent=fmt(totalItems);
  }
  root.addEventListener('input',e=>{if(e.target.matches('input'))calc()});
- root.getElementById('reset').addEventListener('click',()=>{root.querySelectorAll('input').forEach(i=>i.value='0');calc()});
+ root.addEventListener('change',e=>{if(e.target.matches('input'))calc()});
+ root.getElementById('reset').addEventListener('click',()=>{root.querySelectorAll('input[type=number]').forEach(i=>i.value='0');root.querySelectorAll('input[type=checkbox]').forEach(i=>i.checked=false);calc()});
  calc();
 })();
 </script>
